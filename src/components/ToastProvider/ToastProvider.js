@@ -8,7 +8,23 @@ function ToastProvider({ children }) {
   useEscapeKey(() => setToastList([]));
 
   const value = React.useMemo(() => {
-    return { toastList, setToastList };
+    const createToasts = (message, variant) => {
+      const updatedToasts = [...toastList];
+
+      updatedToasts.push({
+        id: crypto.randomUUID(),
+        content: message,
+        variant: variant,
+      });
+      setToastList(updatedToasts);
+    };
+
+    const dismissToasts = (id) => {
+      const updatedToasts = toastList.filter((toast) => toast.id !== id);
+      setToastList(updatedToasts);
+    };
+
+    return { toastList, createToasts, dismissToasts };
   }, [toastList]);
 
   return <ToastContext value={value}>{children}</ToastContext>;
